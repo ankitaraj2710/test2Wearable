@@ -19,12 +19,15 @@ class ViewController: UIViewController ,WCSessionDelegate{
     var password:String = "ankita2710"
     var id:String = "280042001247363333343437"
     var myPhoton : ParticleDevice?
-    var totalTime:Int = 20
+    var totalTime:Int = 1
     var frameCounter = 0
+  
     @IBOutlet weak var logLabel: UILabel!
     
     @IBOutlet weak var startButton: UIButton!
     
+    
+    @IBOutlet weak var label: UILabel!
     
     @IBOutlet weak var timerLabel: UILabel!
     
@@ -50,21 +53,34 @@ class ViewController: UIViewController ,WCSessionDelegate{
             WCSession.default.delegate = self
             WCSession.default.activate()
         }
+         var random = Int.random(in: 1..<100)
+        if(frameCounter%random == 0
+            &&
+            frameCounter%4 == 0
+            &&
+            totalTime>0){
+           
+            let timeStr: String = String(totalTime)
+            let message = ["time":
+                "100"] as! [String: Any]
+            WCSession.default.sendMessage(message, replyHandler: nil)
         if(frameCounter%60 == 0){
-            if(totalTime>=1){
-                totalTime = totalTime - 1;
+            if(totalTime>=0){
+                totalTime = totalTime + 1;
                 
                 timerLabel.text = "Time: \(totalTime)"
+            }
+            
             }
         }
         ParticleCloud.init()
         loginInParticle()
         getDeviceFromCloud()
-        
+    
     }
     
     
-                
+        
                 
     
 
@@ -99,11 +115,12 @@ class ViewController: UIViewController ,WCSessionDelegate{
     
     
     }
-    func callParticleTimeFunction(time:String){
+    func callParticleTimeFunction(face:String){
         //startButton.text = "Please check particle for time"
-        let parameters = [time]
-        print("callParticleTimeFunction: \(time)")
-        var call = myPhoton!.callFunction("makeShapes", withArguments: parameters) {
+        label.text = "Please check particle"
+        let parameters = [face]
+        print("callParticleTimeFunction: \(face)")
+        var call = self.myPhoton!.callFunction("makeFaces", withArguments: parameters) {
             
             (resultCode : NSNumber?, error : Error?) -> Void in
             if (error == nil) {
@@ -115,7 +132,7 @@ class ViewController: UIViewController ,WCSessionDelegate{
         }
     }
   
-                        }
+}
 
 
             
