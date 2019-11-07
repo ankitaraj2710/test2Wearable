@@ -19,8 +19,15 @@ class ViewController: UIViewController ,WCSessionDelegate{
     var password:String = "ankita2710"
     var id:String = "280042001247363333343437"
     var myPhoton : ParticleDevice?
-    
+    var totalTime:Int = 20
+    var frameCounter = 0
     @IBOutlet weak var logLabel: UILabel!
+    
+    @IBOutlet weak var startButton: UIButton!
+    
+    
+    @IBOutlet weak var timerLabel: UILabel!
+    
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         
     }
@@ -34,13 +41,6 @@ class ViewController: UIViewController ,WCSessionDelegate{
     }
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         
-        let timezone:String = message["timezone"]! as! String
-        let city:String = message["city"]! as! String
-        
-        print(timezone)
-        print(city)
-        
-        print("Received a message from the watch: \(message)")
     }
     
     override func viewDidLoad() {
@@ -50,7 +50,13 @@ class ViewController: UIViewController ,WCSessionDelegate{
             WCSession.default.delegate = self
             WCSession.default.activate()
         }
-        
+        if(frameCounter%60 == 0){
+            if(totalTime>=1){
+                totalTime = totalTime - 1;
+                
+                timerLabel.text = "Time: \(totalTime)"
+            }
+        }
         ParticleCloud.init()
         loginInParticle()
         getDeviceFromCloud()
@@ -90,13 +96,13 @@ class ViewController: UIViewController ,WCSessionDelegate{
             }
             
         } // end getDevice()
+    
+    
     }
-    
-    
-    func callParticleTimeFunction(hour:String){
-        //logLabel.text = "Please check particle for time"
-        let parameters = [hour]
-        print("callParticleTimeFunction: \(hour)")
+    func callParticleTimeFunction(time:String){
+        //startButton.text = "Please check particle for time"
+        let parameters = [time]
+        print("callParticleTimeFunction: \(time)")
         var call = myPhoton!.callFunction("makeShapes", withArguments: parameters) {
             
             (resultCode : NSNumber?, error : Error?) -> Void in
@@ -107,7 +113,15 @@ class ViewController: UIViewController ,WCSessionDelegate{
                 print("Error when telling Particle to turn green")
             }
         }
- }
-}
+    }
+  
+                        }
+
+
+            
+            
+
+
+
 
 
